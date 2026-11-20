@@ -1,21 +1,22 @@
 {% extends "base.html" %}
-{% load static %}
+{% load wagtailcore_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
-{% block extra_css %}
-
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-<link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
-{% endblock extra_css %}
-
 {% block content %}
+<nav class="languages">
+    <strong>{{ page.locale.get_display_name }}</strong>
+    {% for translation in page.get_translations.live %}
+        <a href="{% pageurl translation %}" lang="{{ translation.locale.language_code }}">{{ translation.locale.get_display_name }}</a>
+    {% endfor %}
+</nav>
 
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-{% include 'home/welcome_page.html' %}
+<h1>wagtail-testbed</h1>
+<p>MDN Web Docs, loaded into a Wagtail site.</p>
 
-{% endblock content %}
+<ul>
+    {% for child in page.get_children.live %}
+        <li><a href="{% pageurl child %}">{{ child.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
