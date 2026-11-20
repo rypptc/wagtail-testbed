@@ -135,6 +135,7 @@ class Command(BaseCommand):
                 title=header["title"],
                 slug=slug,
                 locale=home.locale,
+                mdn_path=path,
                 short_title=str(header.get("short-title") or ""),
                 page_type=page_types.get(header.get("page-type")),
                 browser_compat=as_list(header.get("browser-compat"), path),

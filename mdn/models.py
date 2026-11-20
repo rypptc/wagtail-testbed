@@ -80,6 +80,9 @@ class DocPage(Page):
     """One MDN document: its title, the metadata in its header and its body
     as blocks."""
 
+    # The MDN folder this page comes from, e.g. "web/css/reference/properties/color".
+    # Empty for pages created in the admin.
+    mdn_path = models.CharField(max_length=255, unique=True, null=True, editable=False)
     short_title = models.CharField(max_length=255, blank=True)
     page_type = models.ForeignKey(
         PageType, null=True, blank=True, on_delete=models.PROTECT, related_name="pages"
@@ -96,6 +99,7 @@ class DocPage(Page):
             ("code", CodeBlock()),
             ("callout", CalloutBlock()),
             ("table", TableBlock()),
+            ("raw_html", blocks.RawHTMLBlock()),
         ],
         blank=True,
     )
