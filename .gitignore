@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv*/
+
+# MDN clones (fetched at build time)
+data/
+
+# Local files
+.env
+media/
+static/
+.tmp/
