@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     "mdn",
     "home",
     "search",
+    "wagtail_localize",
+    "wagtail_localize.locales",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -123,13 +126,27 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
 
 TIME_ZONE = "UTC"
 
 USE_I18N = True
 
 USE_TZ = True
+
+# The locales MDN publishes, with MDN's own codes.
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en", "English"),
+    ("es", "Spanish"),
+    ("fr", "French"),
+    ("ja", "Japanese"),
+    ("ko", "Korean"),
+    ("pt-br", "Portuguese (Brazil)"),
+    ("ru", "Russian"),
+    ("zh-cn", "Chinese (Simplified)"),
+    ("zh-tw", "Chinese (Traditional)"),
+]
+WAGTAIL_I18N_ENABLED = True
 
 
 # Static files (CSS, JavaScript, Images)

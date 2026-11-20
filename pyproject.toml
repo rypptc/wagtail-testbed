@@ -8,4 +8,5 @@ dependencies = [
     "psycopg[binary]>=3.3.9",
     "python-frontmatter>=1.3.0",
     "wagtail==8.1",
+    "wagtail-localize==1.14.5",
 ]
