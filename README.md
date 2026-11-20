@@ -8,6 +8,8 @@ To fill the site we used content from [MDN Web Docs](https://developer.mozilla.o
 - each page body is converted from Markdown into StreamField blocks (headings, paragraphs, code, callouts, tables);
 - the metadata in each document's header is modelled as fields and relations: page type, status, spec URLs and browser-compat keys.
 
+See [docs/content-model.md](docs/content-model.md) for how each MDN document is stored.
+
 This repository holds only the site's code. By default, the build script downloads MDN's content at a fixed version, so everyone gets the same site. You can also build it from MDN's latest content, though the build may then fail if MDN has changed in ways the importer does not expect yet.
 
 ## Getting started
