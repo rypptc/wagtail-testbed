@@ -81,8 +81,9 @@ class DocPage(Page):
     as blocks."""
 
     # The MDN folder this page comes from, e.g. "web/css/reference/properties/color".
-    # Empty for pages created in the admin.
-    mdn_path = models.CharField(max_length=255, unique=True, null=True, editable=False)
+    # Empty for pages created in the admin. Not unique: a translation has the
+    # same path as its English page, in another locale.
+    mdn_path = models.CharField(max_length=255, null=True, editable=False, db_index=True)
     short_title = models.CharField(max_length=255, blank=True)
     page_type = models.ForeignKey(
         PageType, null=True, blank=True, on_delete=models.PROTECT, related_name="pages"
