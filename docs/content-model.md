@@ -62,6 +62,42 @@ The Markdown body is converted into StreamField blocks:
 - `table`: tables, with rich text cells;
 - `raw_html`: blocks MDN writes in HTML, such as tables, kept as they are. HTML comments are dropped: they are notes for MDN's tools and are not shown on MDN.
 
+## Translations
+
+MDN's translations live in another repository, [mdn/translated-content](https://github.com/mdn/translated-content), with one folder per language and the same folder names as the English pages. `files/es/web/css/reference/properties/color/index.md` is the Spanish version of `files/en-us/web/css/reference/properties/color/index.md`.
+
+The site has two kinds of translations.
+
+### MDN's translations, imported
+
+`build_mdn --translations` turns each translated document into a translation of its English page, with Wagtail's `copy_for_translation`: a copy of the English page in the other language, linked to it and placed in the same position in that language's tree. The translation:
+
+- takes its `title` and `short_title` from its own header;
+- keeps the other fields of the English page (`page_type`, `status`, `browser_compat`, `spec_urls`), which `copy_for_translation` copies;
+- gets its body from its own `index.md`. Links point to the page in the same language when it exists, and to the English page otherwise;
+- is published.
+
+When a translated page's parent has no translation, Wagtail creates an alias of the English parent in that language, so every language has a complete tree. Aliases show the English content.
+
+These pages are not registered in wagtail-localize. wagtail-localize keeps its own records for each translation (a translation source, and the text split into segments), and the import does not create them. To wagtail-localize, these are pages in another language that it did not translate.
+
+Translated documents with no English page are skipped (335 at the pinned version).
+
+| Language | Translations | Aliases |
+|---|---|---|
+| es | 2,598 | 49 |
+| fr | 7,859 | 31 |
+| ja | 10,295 | 9 |
+| ko | 3,266 | 76 |
+| pt-br | 1,906 | 76 |
+| ru | 2,751 | 95 |
+| zh-cn | 7,627 | 156 |
+| zh-tw | 1,011 | 88 |
+
+### Translations made with wagtail-localize
+
+A smaller set of pages will be translated through wagtail-localize, the way an editor would: submitted for translation, translated segment by segment, and published. Not built yet.
+
 ## What is left out
 
 - `slug`: Wagtail builds its own URL from the folder names, so MDN's slug is not stored.
