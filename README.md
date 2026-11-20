@@ -14,7 +14,24 @@ This repository holds only the site's code. By default, the build script downloa
 
 ## Getting started
 
-Setup instructions will be added once the build scripts are in place.
+You need Python 3.13, [uv](https://docs.astral.sh/uv/), git and PostgreSQL.
+
+```sh
+git clone https://github.com/rypptc/wagtail-testbed.git
+cd wagtail-testbed
+uv sync
+createdb wagtail_testbed
+uv run python manage.py migrate
+uv run python manage.py build_mdn
+uv run python manage.py createsuperuser
+uv run python manage.py runserver
+```
+
+`build_mdn` downloads MDN's content into `data/`, loads the page tree and fills each page's body. The full site takes a while; to try it on one section first, use `--prefix`, e.g. `build_mdn --prefix web/css`. To use MDN's latest content instead of the pinned version, add `--latest`.
+
+The database is `wagtail_testbed` on the local PostgreSQL server, with your system user. To use another database or server, set `TESTBED_DB_NAME`, `TESTBED_DB_USER`, `TESTBED_DB_PASSWORD`, `TESTBED_DB_HOST` and `TESTBED_DB_PORT`.
+
+`build_mdn` is meant for an empty database. Running `fill_bodies` again rebuilds every body from MDN's files, so changes made to the bodies in the admin are lost.
 
 ## Credits and licence
 
