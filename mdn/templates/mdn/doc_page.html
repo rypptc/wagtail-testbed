@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-docpage{% endblock %}
+
+{% block content %}
+<article>
+    <h1>{{ page.title }}</h1>
+
+    {% for status in page.status.all %}
+        <span class="status status-{{ status.name }}">{{ status.name }}</span>
+    {% endfor %}
+
+    {% for block in page.body %}
+        {% if block.block_type == "heading" %}
+            <h{{ block.value.level }}>{{ block.value.text }}</h{{ block.value.level }}>
+        {% elif block.block_type == "code" %}
+            <pre><code class="language-{{ block.value.language }}">{{ block.value.code }}</code></pre>
+        {% elif block.block_type == "callout" %}
+            <aside class="callout callout-{{ block.value.kind }}">{{ block.value.text }}</aside>
+        {% elif block.block_type == "table" %}
+            <table>
+                <thead>
+                    <tr>{% for cell in block.value.header %}<th>{{ cell }}</th>{% endfor %}</tr>
+                </thead>
+                <tbody>
+                    {% for row in block.value.rows %}
+                        <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            {% include_block block %}
+        {% endif %}
+    {% endfor %}
+
+    {% if page.spec_urls.all %}
+        <h2>Specifications</h2>
+        <ul>
+            {% for spec in page.spec_urls.all %}
+                <li><a href="{{ spec.url }}">{{ spec.url }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% with children=page.get_children.live %}
+        {% if children %}
+            <h2>In this section</h2>
+            <ul>
+                {% for child in children %}
+                    <li><a href="{% pageurl child %}">{{ child.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</article>
+{% endblock %}
