@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import os
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
 ]
 
 MIDDLEWARE = [
@@ -85,10 +87,15 @@ WSGI_APPLICATION = "testbed.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+# PostgreSQL. Empty values use the local server with your system user.
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("TESTBED_DB_NAME", "wagtail_testbed"),
+        "USER": os.environ.get("TESTBED_DB_USER", ""),
+        "PASSWORD": os.environ.get("TESTBED_DB_PASSWORD", ""),
+        "HOST": os.environ.get("TESTBED_DB_HOST", ""),
+        "PORT": os.environ.get("TESTBED_DB_PORT", ""),
     }
 }
 
