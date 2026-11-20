@@ -1,7 +1,11 @@
+from django import forms
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import StreamField
-from wagtail.models import Page
+from wagtail.models import Orderable, Page
 
 
 # Rich text features: INLINE inside table cells, RICH everywhere else.
@@ -50,8 +54,40 @@ class TableBlock(blocks.StructBlock):
     rows = blocks.ListBlock(blocks.ListBlock(blocks.RichTextBlock(features=INLINE)))
 
 
+class PageType(models.Model):
+    """MDN's page-type, e.g. "css-property". One row per type, shared by
+    every page of that type."""
+
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Status(models.Model):
+    """experimental, deprecated or non-standard. A page can have several."""
+
+    name = models.CharField(max_length=30, unique=True)
+
+    class Meta:
+        verbose_name_plural = "statuses"
+
+    def __str__(self):
+        return self.name
+
+
 class DocPage(Page):
-    """One MDN document: its title and its body as blocks."""
+    """One MDN document: its title, the metadata in its header and its body
+    as blocks."""
+
+    short_title = models.CharField(max_length=255, blank=True)
+    page_type = models.ForeignKey(
+        PageType, null=True, blank=True, on_delete=models.PROTECT, related_name="pages"
+    )
+    status = ParentalManyToManyField(Status, blank=True, related_name="pages")
+    browser_compat = ArrayField(
+        models.CharField(max_length=255), default=list, blank=True
+    )
 
     body = StreamField(
         [
@@ -64,4 +100,25 @@ class DocPage(Page):
         blank=True,
     )
 
-    content_panels = Page.content_panels + [FieldPanel("body")]
+    content_panels = Page.content_panels + [
+        FieldPanel("short_title"),
+        MultiFieldPanel(
+            [
+                FieldPanel("page_type"),
+                FieldPanel("status", widget=forms.CheckboxSelectMultiple),
+                FieldPanel("browser_compat"),
+                InlinePanel("spec_urls", label="Spec URLs"),
+            ],
+            heading="MDN metadata",
+        ),
+        FieldPanel("body"),
+    ]
+
+
+class SpecURL(Orderable):
+    """One of the specifications a document cites, in MDN's order."""
+
+    page = ParentalKey(DocPage, on_delete=models.CASCADE, related_name="spec_urls")
+    url = models.URLField(max_length=500)
+
+    panels = [FieldPanel("url")]
