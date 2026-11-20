@@ -32,6 +32,8 @@ The keys are defined in MDN's [front matter schema](https://github.com/mdn/conte
 
 Every `index.md` becomes a `DocPage`. The folders give the tree: `web/javascript/reference/global_objects/array/map` is a child of `.../array`, which is a child of `.../global_objects`, and so on up to the home page.
 
+Each page stores the folder it comes from in `mdn_path`, e.g. `web/css/reference/properties/color`.
+
 ## The header
 
 Each key in the header is stored in a field of `DocPage`. Each one uses a different way of storing data in Django, which gives the site a variety of cases to test.
@@ -57,11 +59,12 @@ The Markdown body is converted into StreamField blocks:
 - `paragraph`: rich text with bold, italic, inline code, links and lists;
 - `code`: code samples, with their language;
 - `callout`: MDN's note, warning and callout boxes;
-- `table`: tables, with rich text cells.
+- `table`: tables, with rich text cells;
+- `raw_html`: blocks MDN writes in HTML, such as tables, kept as they are. HTML comments are dropped: they are notes for MDN's tools and are not shown on MDN.
 
 ## What is left out
 
 - `slug`: Wagtail builds its own URL from the folder names, so MDN's slug is not stored.
 - `sidebar`: which sidebar MDN shows. Not stored yet.
 - The browser compatibility data. The header only holds a key; the data itself lives in another repository, [mdn/browser-compat-data](https://github.com/mdn/browser-compat-data), which is not downloaded. The key is stored, so the data could be added later.
-- Parts of the body that the converter does not handle yet, such as images, tables written in HTML and MDN's macros (`{{...}}`).
+- Parts of the body that the converter does not handle yet, such as images and most of MDN's macros (`{{...}}`).
